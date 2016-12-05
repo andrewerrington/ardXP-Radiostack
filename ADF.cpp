@@ -45,6 +45,9 @@ void ADF::refreshKeys(Keypad keypad){
   if (keypad.isPressed(_keyChar_BFO)){
     _flip_BFO_mode = true;
   }
+  if (keypad.isPressed(_keyChar_FLT)){
+    _FLT_ET_pressed = true;
+  }
 }
 
 void ADF::refresh(){
@@ -52,8 +55,27 @@ void ADF::refresh(){
 
   if (_flip_ADF_SBY == true) {
     _flip_ADF_SBY = false;
-    sendXP_Cmd("sim/radios/adf1_standy_flip");
+    if (_timer_mode > 0) { // if the timer is displayed then we need to hide it
+      _timer_mode = 0;
+      sendXP_Cmd("ST/time/timer_mode_0");
+    } else { // otherwise we were in FRQ mode and need to swap the standby and active 
+      sendXP_Cmd("sim/radios/adf1_standy_flip");
+    }
   }
+  if (_FLT_ET_pressed == true) {
+    _FLT_ET_pressed = false;
+    if (_timer_mode == 0){
+      _timer_mode = 1;
+      sendXP_Cmd("ST/time/timer_mode_1");
+    }else if (_timer_mode == 1){
+      _timer_mode = 2;
+      sendXP_Cmd("ST/time/timer_mode_2");
+    } else if (_timer_mode == 2){
+      _timer_mode = 1;
+      sendXP_Cmd("ST/time/timer_mode_1");  
+    }
+  }
+  
   if (_flip_BFO_mode == true) {
     _flip_BFO_mode = false;
     if (_powerStatus ==2) {

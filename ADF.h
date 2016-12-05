@@ -27,6 +27,8 @@ class ADF
     int _powerStatus = 0; //0 = off, 1 = antenna, 2 = on, 3 = tone, 4 = test
     bool _flip_ADF_SBY = false;
     bool _flip_BFO_mode = false;
+    bool _FLT_ET_pressed = false;
+    int _timer_mode = 0; // 0 = inactive, 1 = flight time, 2 = elapsed time
     
     ClickEncoder *ADF_Frequ_Encoder;
     int16_t ADF_Enc_Current = -1;
