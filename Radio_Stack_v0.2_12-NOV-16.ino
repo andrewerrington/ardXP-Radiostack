@@ -14,6 +14,7 @@
 #include "NAVCOMM.h"
 #include "DME.h"
 #include "ADF.h"
+#include "XPDR.h"
 
 //int COMM1_VOL_POT_PIN = 0;
 //int NAV1_VOL_POT_PIN = 1;
@@ -22,6 +23,7 @@ NAVCOMM *NAVCOMM1;
 NAVCOMM *NAVCOMM2;
 DME *KN6X_DME;
 ADF *KR87_ADF;
+XPDR *KT70_XPDR;
 
 const byte ROWS = 8; //four rows
 const byte COLS = 8; //three columns
@@ -29,7 +31,7 @@ char keys[ROWS][COLS] = {
   {'0','1','2','3','4','5','6','7'},
   {'8','9','q','w','e','r','t','y'},
   {'u','i','o','p','a','s','d','f'},
-  {'g','h','i','j','k','l','z','x'},
+  {'g','h','<','j','k','l','z','x'},
   {'c','v','b','n','m','A','B','C'},
   {'D','E','F','G','H','I','J','K'},
   {'L','M','N','O','P','Q','R','S'},
@@ -45,6 +47,7 @@ void timerIsr() {
   NAVCOMM1->service();
   NAVCOMM2->service();
   KR87_ADF->service();
+  KT70_XPDR->service();
 }
 
 
@@ -76,7 +79,7 @@ void setup()  {
                           '8','e');
                           
     KN6X_DME = new DME(3, 
-                       'i', 'g' 
+                       'x', 'z' 
                       );
                       
     KR87_ADF = new ADF(39,  38,    
@@ -85,7 +88,21 @@ void setup()  {
             's', 'u',
             'o', 'd',
             'a');
-    
+            
+    KT70_XPDR = new XPDR( 30,31,
+                          32,33,
+                          34,35,
+                          36,37,
+                          'i','0',
+                          'g', '<', 'k', 'j', 'l', 'h');
+
+    /*  int XPDR_THSDS_ENC_PINA,  int XPDR_THSDS_ENC_PINB,
+            int XPDR_HUNDS_ENC_PINA,  int XPDR_HUNDS_ENC_PINB,
+            int XPDR_TENS_ENC_PINA,  int XPDR_TENS_ENC_PINB,
+            int XPDR_ONES_ENC_PINA,  int XPDR_ONES_ENC_PINB,
+            char keyChar_IDT, char keyChar_VFR, 
+            char keyChar_OFF, char keyChar_SBY, char keyChar_TST, char keyChar_GND, char keyChar_ON, char keyChar_ALT
+    */
    /* String NAVCOMM_nr,
                  int COMM_ENC_PINA,     int COMM_ENC_PINB,
                  int NAV_ENC_PINA,      int NAV_ENC_PINB,
@@ -117,6 +134,7 @@ void loop()
   NAVCOMM2->refresh();
   KN6X_DME->refresh();
   KR87_ADF->refresh();
+  KT70_XPDR->refresh();
   /*
   char key = keypad.getKey();
   if (key != NO_KEY){
@@ -129,12 +147,18 @@ void loop()
     NAVCOMM2->refreshKeys(keypad);
     KN6X_DME->refreshKeys(keypad);
     KR87_ADF->refreshKeys(keypad);
-    /*
-    Serial.print(keypad.key[0].kchar);Serial.print(keypad.key[0].kstate); Serial.print(" ; ");
+    KT70_XPDR->refreshKeys(keypad);
+    
+    Serial.println("Keys pressed:");
+    Serial.print(keypad.key[0].kchar); Serial.print(" ; ");
     Serial.print(keypad.key[1].kchar);Serial.print(" ; ");
     Serial.print(keypad.key[2].kchar);Serial.print(" ; ");
-    Serial.println(keypad.key[3].kchar);
-    */
+    Serial.print(keypad.key[3].kchar);Serial.print(" ; ");
+    Serial.print(keypad.key[4].kchar);Serial.print(" ; ");
+    Serial.print(keypad.key[5].kchar);Serial.print(" ; ");
+    Serial.print(keypad.key[6].kchar);Serial.print(" ; ");
+    Serial.println(keypad.key[7].kchar);
+    
   }
    
 } 

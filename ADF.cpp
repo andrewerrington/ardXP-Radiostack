@@ -48,6 +48,9 @@ void ADF::refreshKeys(Keypad keypad){
   if (keypad.isPressed(_keyChar_FLT)){
     _FLT_ET_pressed = true;
   }
+  if (keypad.isPressed(_keyChar_RST)){
+    _FLT_RST_pressed = true;
+  }
 }
 
 void ADF::refresh(){
@@ -62,7 +65,7 @@ void ADF::refresh(){
       sendXP_Cmd("sim/radios/adf1_standy_flip");
     }
   }
-  if (_FLT_ET_pressed == true) {
+  if (_FLT_ET_pressed == true) { // timer_mode:  0 = inactive, 1 = flight time, 2 = elapsed time
     _FLT_ET_pressed = false;
     if (_timer_mode == 0){
       _timer_mode = 1;
@@ -70,10 +73,16 @@ void ADF::refresh(){
     }else if (_timer_mode == 1){
       _timer_mode = 2;
       sendXP_Cmd("ST/time/timer_mode_2");
+      //sendXP_Cmd("sim/instruments/timer_start_stop");
+      
     } else if (_timer_mode == 2){
       _timer_mode = 1;
       sendXP_Cmd("ST/time/timer_mode_1");  
     }
+  }
+  if(_FLT_RST_pressed == true) {
+    _FLT_RST_pressed = false;
+    sendXP_Cmd("sim/instruments/timer_cycle");
   }
   
   if (_flip_BFO_mode == true) {
@@ -104,7 +113,7 @@ void ADF::refresh(){
     if(_ADF_FrequRes == false){
       sendXP_Cmd("sim/radios/stby_adf1_ones_tens_up");
     } else {
-      sendXP_Cmd("sim/radios/stby_adf1_hundreds_thous_up");
+      sendXP_Cmd("sim/radios/stby_adf1_hundreds_up");
     }
     ADF_Enc_Last = ADF_Enc_Current;
   } 
@@ -112,7 +121,7 @@ void ADF::refresh(){
     if(_ADF_FrequRes == false){
       sendXP_Cmd("sim/radios/stby_adf1_ones_tens_down");
     } else {
-      sendXP_Cmd("sim/radios/stby_adf1_hundreds_thous_down");
+      sendXP_Cmd("sim/radios/stby_adf1_hundreds_down");
     }
     ADF_Enc_Last = ADF_Enc_Current;
   } 

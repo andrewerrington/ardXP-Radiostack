@@ -28,6 +28,7 @@ class ADF
     bool _flip_ADF_SBY = false;
     bool _flip_BFO_mode = false;
     bool _FLT_ET_pressed = false;
+    bool _FLT_RST_pressed = false;
     int _timer_mode = 0; // 0 = inactive, 1 = flight time, 2 = elapsed time
     
     ClickEncoder *ADF_Frequ_Encoder;
